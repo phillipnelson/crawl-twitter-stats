@@ -4,6 +4,11 @@ fu-twitter-stats
 A Twitter Statistics Package for a project for the Freelancers Union. Graphs are powered with D3.
 
 
+General Setup
+================================
+
+1. Create a list of Twitter OAUTH credentials @ config/twitter.py 
+
 
 Influencers of An Audience
 ================================
@@ -16,8 +21,8 @@ python twitter-followers.py <twitter_username>
 2. Create influence matrix
 
 Find the 20 most influential people in my audience (excluding me) and a matrix
-representing the interraltions between these people:
-python twitter-followers.py data/<twitter_username>.csv 20 <twitter_userid>
+representing the interrelations between these people:
+python twitter-rankings.py data/<twitter_username>.csv 20 <twitter_userid>
 
 3. Graph influence matrix
 

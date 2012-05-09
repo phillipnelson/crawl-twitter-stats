@@ -3,7 +3,7 @@ body { font:13px/1.231 sans-serif; *font-size:small; }
 h1 {
     font-size: 2.0em;
     font-weight: 100;
-    color: #111;
+    color: #000;
 }
 
 #chart {
@@ -12,6 +12,16 @@ h1 {
 
 .chord path {
   fill-opacity: .67;
-  stroke: #000;
+  stroke: #999;
   stroke-width: .5px;
+}
+
+.group path {
+stroke: #999;
+stroke-width: .5px;
+}
+
+text {
+  font: 11px sans-serif;
+  pointer-events: none;
 }

@@ -20,8 +20,8 @@ d3.json(DATA_FILE, function(json) {
         .sortSubgroups(d3.descending)
         .matrix(matrix);
 
-    var width = 600,
-        height = 600,
+    var width = 1000,
+        height = 800,
         innerRadius = Math.min(width, height) * .41,
         outerRadius = innerRadius * 1.1;
 
@@ -36,16 +36,26 @@ d3.json(DATA_FILE, function(json) {
       .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    svg.append("g")
-      .selectAll("path")
-        .data(chord.groups)
-      .enter().append("path")
+    var g = svg.selectAll("g.group")
+            .data(chord.groups)
+          .enter().append("svg:g")
+            .attr("class", "group");
+
+    g.append("path")
         .style("fill", function(d) { return fill(d.index); })
         .style("stroke", function(d) { return fill(d.index); })
         .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
+        .attr("id", function(d, i) { return "group-" + d.index; })
         .on("mouseover", fade(.1))
         .on("mouseout", fade(1));
-
+  
+    g.append("svg:text")
+        .attr("x", 6)
+        .attr("dy", 15)
+        .filter(function(d) { return d.value > 1; })
+      .append("svg:textPath")
+        .attr("xlink:href", function(d) { return "#group-" + d.index; })
+        .text(function(d) { return users[d.index]; });
 
 
     var ticks = svg.append("g")
@@ -65,7 +75,7 @@ d3.json(DATA_FILE, function(json) {
         .attr("y1", 0)
         .attr("x2", 5)
         .attr("y2", 0)
-        .style("stroke", "#000");
+        .style("stroke", "#ddd");
 
     ticks.append("text")
         .attr("x", 8)
@@ -76,7 +86,8 @@ d3.json(DATA_FILE, function(json) {
         .attr("transform", function(d) {
           return d.angle > Math.PI ? "rotate(180)translate(-16)" : null;
         })
-        .text(function(d) { return d.label; });
+        .text(function(d) { return d.label; })
+        .style("stroke", "#ddd");;
 
     svg.append("g")
         .attr("class", "chord")
