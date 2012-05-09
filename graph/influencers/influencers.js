@@ -9,11 +9,19 @@ d3.json(DATA_FILE, function(json) {
 
 	json.forEach(function(user) {
 		var row = new Array();
+		var relations_total = 0;
+
+		for (var i in user.relations) {
+			relations_total += user.relations[i];
+		}
+
 		json.forEach(function(user1) {
-			row.push(user1.id in user.relations ? user.relations[user1.id] : 0);
+            multiplier = relations_total > 0 ? user.influence/relations_total : 0;
+			row.push(user1.id in user.relations ? user.relations[user1.id] * multiplier : 0);
 		});
 		matrix.push(row);
 	});
+
 
     var chord = d3.layout.chord()
         .padding(.05)
