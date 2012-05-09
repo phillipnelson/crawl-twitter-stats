@@ -1,11 +1,15 @@
 '''
 Rank the top N influencers in graph
 
-Usage:  python twitter-rankings.py <audience_graph_file>.txt [N=20] [skip_user=<username>]
+Usage:  python twitter-rankings.py <audience_graph_file> [N=20] [<skip_user_username>]
 
 Input:
     File of audience graph: (user1) follows (user2)
     Format:     <user_id>,<friend_id>
+
+
+N number of top influencers    
+<skip_user_username> if this is an audience of a single user, don't include the user in the rankings.
 
 Output: 
     File:       <username>_graph.json
@@ -31,13 +35,12 @@ def top_n_influential(input_graph, num):
     
     # Friend user tuples have been reversed and sorted
     for (friend,user) in input_graph:
-        if skip_user and skip_user == friend:
+        if SKIP_USER == friend:
             continue
         if not friend == last or [friend,user] == input_graph[-1]:
             if last:
                 stack.append([count, last])						# list count first for sorting
             count = 0
-        
         last = friend
         count += 1
     
@@ -65,7 +68,7 @@ if __name__ == '__main__':
 
     input_file = sys.argv[1]
     N = int(sys.argv[2])
-    skip_user = sys.argv[3] if len(sys.argv) == 4 else False
+    SKIP_USER = str(twitter_api.GetUser(sys.argv[3]).id) if len(sys.argv) == 4 else False
     
     input_graph = reverse_list_items(get_csv(input_file))
     input_graph.sort()                            
