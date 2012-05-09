@@ -1,7 +1,7 @@
 '''
 Rank the top N influencers in graph
 
-Usage:  python twitter-followers.py <audience_graph_file>.txt [N=20]
+Usage:  python twitter-rankings.py <audience_graph_file>.txt [N=20] [skip_user=<username>]
 
 Input:
     File of audience graph: (user1) follows (user2)
@@ -30,7 +30,9 @@ def top_n_influential(input_graph, num):
     stack = []
     
     # Friend user tuples have been reversed and sorted
-    for (friend,user) in input_graph:                           
+    for (friend,user) in input_graph:
+        if skip_user and skip_user == friend:
+            continue
         if not friend == last or [friend,user] == input_graph[-1]:
             if last:
                 stack.append([count, last])						# list count first for sorting
@@ -47,7 +49,7 @@ def top_n_relations(input_graph,popular_graph):
     popular_relations = []
     zero_relations = dict(map(lambda (i,n): (i,0), popular_graph))
     for (influencer,num_followers) in popular_graph:
-        relation = { 'id': influencer, 'username': twitter_api.GetUser(influencer).screen_name, 'relations': zero_relations.copy() }
+        relation = { 'id': influencer, 'username': twitter_api.GetUser(influencer).screen_name, 'influence': num_followers, 'relations': zero_relations.copy() }
         followers = {}
         del relation['relations'][influencer]
         for (friend,user) in input_graph:
@@ -63,6 +65,7 @@ if __name__ == '__main__':
 
     input_file = sys.argv[1]
     N = int(sys.argv[2])
+    skip_user = sys.argv[3] if len(sys.argv) == 4 else False
     
     input_graph = reverse_list_items(get_csv(input_file))
     input_graph.sort()                            
@@ -76,7 +79,3 @@ if __name__ == '__main__':
     popular_matrix_file  = open('%s.json' % input_file, 'w')
     popular_matrix_file.write(json.dumps(popular_matrix))
     popular_matrix_file.close()
-    
-
-    
-

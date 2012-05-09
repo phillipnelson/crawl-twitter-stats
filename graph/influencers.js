@@ -1,5 +1,5 @@
 
-d3.json("../data/clembie_audience.csv.json", function(json) {
+d3.json(DATA_FILE, function(json) {
 	var matrix = new Array();
 	var users = new Array();
 
@@ -10,11 +10,10 @@ d3.json("../data/clembie_audience.csv.json", function(json) {
 	json.forEach(function(user) {
 		var row = new Array();
 		json.forEach(function(user1) {
-			row.push(user.relations[user1.id] ? user1.id in user.relations : 0);
+			row.push(user1.id in user.relations ? user.relations[user1.id] : 0);
 		});
 		matrix.push(row);
 	});
-    
 
     var chord = d3.layout.chord()
         .padding(.05)
