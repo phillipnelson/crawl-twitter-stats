@@ -76,9 +76,6 @@ if __name__ == '__main__':
     popular_graph = top_n_influential(input_graph, N)
     popular_matrix = top_n_relations(input_graph,popular_graph)
     
-    print json.dumps(popular_graph,indent=2)
-    print json.dumps(popular_matrix,indent=2)
-    
     popular_matrix_file  = open('%s.json' % input_file, 'w')
     popular_matrix_file.write(json.dumps(popular_matrix))
     popular_matrix_file.close()

@@ -7,21 +7,21 @@ h1 {
 }
 
 #chart {
-  font: 10px sans-serif;
+    font: 10px sans-serif;
 }
 
 .chord path {
-  fill-opacity: .67;
-  stroke: #999;
-  stroke-width: .5px;
+    fill-opacity: .67;
+    stroke: #999;
+    stroke-width: .5px;
 }
 
 .group path {
-stroke: #999;
-stroke-width: .5px;
+    stroke: #999;
+    stroke-width: .5px;
 }
 
 text {
-  font: 11px sans-serif;
-  pointer-events: none;
+    font: 11px sans-serif;
+    pointer-events: none;
 }
