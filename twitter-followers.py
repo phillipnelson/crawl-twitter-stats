@@ -57,12 +57,18 @@ def write_friends_list(user_id,friends):
         output_friends_file.write("%s,%s\r\n" % (user_id,friend_id))
 
 def write_friends(audience_list):
+    written_friends = get_friends_from_output_friends_file()
     for friend_id in audience_list:
-        write_friends_list(friend_id,get_friends(friend_id))
+        if friend_id not in written_friends:
+            write_friends_list(friend_id,get_friends(friend_id))
+
+def get_friends_from_output_friends_file():
+    friends = [line.strip().split(',').pop(0) for line in output_friends_file]
+    return list(set(friends))
 
 if __name__ == '__main__':
     username = sys.argv[1]
-    output_friends_file  = open("data/%s_audience.csv" % username, 'w')
+    output_friends_file  = open("data/%s_audience.csv" % username, 'a+')
     if len(sys.argv) == 3:
         write_friends(get_audience_from_file(sys.argv[2]))
     else:
