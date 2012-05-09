@@ -1,6 +1,9 @@
 import twitter2
 from config.twitter import CREDENTIALS
 
+'''
+Here we cycle through twitter credentials whenever we receive an authentication error.
+'''
 
 class MyTwitterApi(twitter2.Api):
     def GetFriendIDs(self,user=None,cursor=None):
@@ -19,7 +22,7 @@ class MyTwitterApi(twitter2.Api):
         except twitter2.TwitterError as exc:
             if not 'Not authorized' in str(exc):
                 self.rotateCredentials()
-                return self.GetFriendIDs(userid=userid,cursor=cursor)
+                return self.GetFollowerIDs(userid=userid,cursor=cursor)
             else:
                 raise exc
             
