@@ -33,9 +33,27 @@ d3.json(DATA_FILE, function(json) {
         innerRadius = Math.min(width, height) * .41,
         outerRadius = innerRadius * 1.1;
 
+    function toHex(n) {
+      n = parseInt(n,10);
+      if (isNaN(n)) return "00";
+      n = Math.max(0,Math.min(n,255));
+      return "0123456789ABCDEF".charAt((n-n%16)/16) + "0123456789ABCDEF".charAt(n%16);
+    }
+
+    /* generate (blue) color gradient for arcs */
+    var color_range = []
+    var num_users = users.length;
+    for (n=0; n < num_users; n++) {
+        var red = Math.round(155*n/num_users) + 100;
+        var green = Math.round(155*n/num_users) + 100;
+        var blue = 255;
+        var hex = '#' + toHex(red) + toHex(green) + toHex(blue);
+        color_range.push(hex);
+    }
+
     var fill = d3.scale.ordinal()
         .domain(d3.range(6))
-        .range(["#DADAEB","#BCBDDC","#9E9AC8","#807DBA","#6A51A3","#4A1486"]);
+        .range(color_range);
 
     var svg = d3.select("#chart")
       .append("svg")
@@ -128,5 +146,4 @@ d3.json(DATA_FILE, function(json) {
             .style("opacity", opacity);
       };
     }
-    
 });
