@@ -17,6 +17,7 @@ Output:
 import sys
 import twitter2
 from api import twitter_api
+import math
 
 def get_friends(user_id):
     cursor = -1
@@ -43,14 +44,23 @@ def get_followers(user_id):
     return followers
 
 def get_audience_from_file(filename):
-    audience_list = []
+    usernames = []
     with open(filename) as f:
         for line in f:
-            audience_list.append(get_id(line.strip()))
-    return audience_list
+            usernames.append(line.strip())
+    return get_ids(usernames)
 
 def get_id(username):
     return twitter_api.GetUser(username).id
+
+def get_ids(usernames):
+    user_ids = []
+    for n in range(int(math.ceil(len(usernames) / float(100)))):
+        usernames_batch = usernames[n*100:(n+1)*100]
+        response = twitter_api.UsersLookup(screen_name=usernames_batch)
+        for user in response:
+            user_ids.append(user.id)
+    return user_ids
     
 def write_friends_list(user_id,friends):
     for friend_id in friends:
@@ -58,17 +68,29 @@ def write_friends_list(user_id,friends):
 
 def write_friends(audience_list):
     written_friends = get_friends_from_output_friends_file()
+    print "Friends already processed: %s" % len(written_friends)
+    # audience_info = get_audience_info(audience_list)
     for friend_id in audience_list:
         if friend_id not in written_friends:
+            # if audience_info[friend_id]['friends_count'] < 10000 and audience_info[friend_id]['followers_count'] > 100:
             write_friends_list(friend_id,get_friends(friend_id))
 
 def get_friends_from_output_friends_file():
-    friends = [line.strip().split(',').pop(0) for line in output_friends_file]
+    friends = [int(line.strip().split(',').pop(0)) for line in output_friends_file]
     return list(set(friends))
+
+def get_audience_info(audience_list):
+    audience_info = {}
+    for n in range(int(math.ceil(len(audience_list) / float(100)))):
+        audience_batch = audience_list[n*100:(n+1)*100]
+        response = twitter_api.UsersLookup(user_id=audience_batch)
+        for user in response:
+            audience_info[user.id] = {'followers_count': user.followers_count, 'friends_count': user.friends_count}
+    return audience_info
 
 if __name__ == '__main__':
     username = sys.argv[1]
-    output_friends_file  = open("data/%s_audience.csv" % username, 'a+')
+    output_friends_file  = open("%s/data/%s_audience.csv" % (sys.path[0], username), 'a+')
     if len(sys.argv) == 3:
         write_friends(get_audience_from_file(sys.argv[2]))
     else:
